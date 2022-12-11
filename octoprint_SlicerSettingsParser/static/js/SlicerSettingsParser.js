@@ -2,29 +2,35 @@ $(() => {
 	function SlicerSettingsParserViewModel([ settingsViewModel ]){
 		let self = this;
 
-		self.startupComplete = ko.observable(false);
+		self.settingsViewModel = settingsViewModel;
 
+		self.analyzing_files = ko.observable(false);
+		self.done_analysis = ko.observable(false);
+		
 		self.analyzeAll = () => {
 			console.log("SlicerSettingsParser analyze_all");
+			self.analyzing_files(true);
+			self.done_analysis(false);
+			// $('#analyze_files_info').css('display', '');
 			$.ajax({
-			    url: "api/plugin/SlicerSettingsParser",
+			    url: API_BASEURL + "plugin/SlicerSettingsParser",
 			    type: "POST",
 				data:  JSON.stringify({ command: "analyze_all" }),
-				contentType: "application/json",
+				contentType: "application/json; charset=UTF-8",
 			})
+			.then((data) => {
+				self.analyzing_files(false);
+				self.done_analysis(true);
+			});
 		};
-
-		self.joinedRegexes = ko.computed({
-			read: () => self.startupComplete() && self.settings.regexes().join("\n"),
-			write: rs => self.startupComplete() && self.settings.regexes(rs.split("\n")),
-		});
-
-		self.onStartupComplete = () => {
-			console.log("hi!");
+		
+		self.onBeforeBinding = () => {
 			self.settings = settingsViewModel.settings.plugins.SlicerSettingsParser;
-			self.startupComplete(true);
-			// console.log(self.settings.events(), self.events());
-		}
+			self.joinedRegexes = ko.computed({
+				read: () => self.settings.regexes().join("\n"),
+				write: rs => self.settings.regexes(rs.split("\n")),
+			});
+		};
 	}
 
     OCTOPRINT_VIEWMODELS.push({

@@ -1,10 +1,9 @@
 # coding=utf-8
-from __future__ import absolute_import
-
 import octoprint.plugin
 import octoprint.filemanager
+import octoprint.util.comm
 import re
-import flask
+
 
 class SlicerSettingsParserPlugin(
 	octoprint.plugin.StartupPlugin,
@@ -23,7 +22,9 @@ class SlicerSettingsParserPlugin(
 			regexes=[
 				"^; (?P<key>[^,]*?) = (?P<val>.*)",
 				"^;   (?P<key>.*?),(?P<val>.*)",
-			]
+			],
+			limit="none",
+			maxlines=100
 		)
 
 	def get_template_configs(self):
@@ -40,7 +41,6 @@ class SlicerSettingsParserPlugin(
 		)
 
 	def on_api_command(self, command, data):
-		import flask
 		self._logger.info("received api command: %s" % command)
 		if command == "analyze_all":
 			self._analyze_all()
@@ -53,18 +53,16 @@ class SlicerSettingsParserPlugin(
 
 	def _analyze_all(self):
 		def recurse(files):
-			for key in files:
-				file = files[key]
+			for item in files.values():
 
-				if file["type"] == "folder":
-					recurse(file["children"])
+				if item["type"] == "folder":
+					recurse(item["children"])
 					continue
 
-				if file["typePath"][-1] != "gcode": continue
+				if item["typePath"][-1] != "gcode":
+					continue
 
-				self._analyze_file(file["path"])
-
-
+				self._analyze_file(item["path"])
 
 		recurse(self._storage_interface.list_files())
 
@@ -74,43 +72,57 @@ class SlicerSettingsParserPlugin(
 		file = open(self._storage_interface.path_on_disk(path))
 
 		slicer_settings = dict()
-		regexes = map(lambda x: re.compile(x), self._settings.get(["regexes"]))
+		regexes = [re.compile(x) for x in self._settings.get(["regexes"])]
 
-		for line in file:
+		limit = self._settings.get(['limit'])
+		max_lines = self._settings.get(['maxlines'])
+
+		for i, line in enumerate(file):
+			if limit == 'lines' and i > max_lines:
+				break
+			if limit == 'extrusion' and octoprint.util.comm.gcode_command_for_cmd(line) == 'G1':
+				break
 			for regex in regexes:
 				match = re.search(regex, line)
-
-				if not match: continue
+				if not match:
+					continue
 
 				key, val = match.group("key", "val")
 				slicer_settings[key] = val
-
 				break
 
 		self._storage_interface.set_additional_metadata(path, "slicer_settings", slicer_settings, overwrite=True)
-
 		self._logger.info("Saved slicer settings metadata for file: %s" % path)
 
-		# self._logger.info(self._storage_interface.get_metadata(path))
+	def get_update_information(self):
+		return {
+			"SlicerSettingsParser": {
+				"displayName": "SlicerSettingsParser Plugin",
+				"displayVersion": self._plugin_version,
 
-        def get_update_information(self):
-                return dict(
-                        SlicerSettingsParser=dict(
-                                displayName="SlicerSettingsParser Plugin",
-                                displayVersion=self._plugin_version,
-
-                                # version check: github repository
-                                type="github_release",
-                                user="tjjfvi",
-                                repo="OctoPrint-SlicerSettingsParser",
-                                current=self._plugin_version,
-
-                                # update method: pip
-                                pip="https://github.com/tjjfvi/OctoPrint-SlicerSettingsParser/archive/{target_version}.zip"
-                        )
-                )
+				# version check: github repository
+				"type": "github_release",
+				"user": "larsjuhw",
+				"repo": "OctoPrint-SlicerSettingsParser",
+				"current": self._plugin_version,
+                "stable_branch": {
+                    "name": "Stable",
+                    "branch": "master",
+                    "comittish": ["master"],
+                }, "prerelease_branches": [
+                    {
+                        "name": "Release Candidate",
+                        "branch": "rc",
+                        "comittish": ["rc", "master"],
+                    }
+                ],
+				# update method: pip
+				"pip": "https://github.com/larsjuhw/OctoPrint-SlicerSettingsParser/archive/{target_version}.zip"
+			}
+		}
 
 __plugin_name__ = "SlicerSettingsParser"
+__plugin_pythoncompat__ = ">=3,<4"
 
 def __plugin_load__():
 	global __plugin_implementation__

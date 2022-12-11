@@ -4,15 +4,17 @@ layout: plugin
 id: SlicerSettingsParser
 title: OctoPrint-SlicerSettingsParser
 description: Plugin to analyse gcode for slicer settings comments and add additional metadata of such settings. Useless sans additional plugins to use th
-author: T6
+authors:
+- Larsjuhw
+- T6
 license: AGPLv3
 
 # TODO
 date: today's date in format YYYY-MM-DD, e.g. 2015-04-21
 
-homepage: https://github.com/tjjfvi/OctoPrint-SlicerSettingsParser
-source: https://github.com/tjjfvi/OctoPrint-SlicerSettingsParser
-archive: https://github.com/tjjfvi/OctoPrint-SlicerSettingsParser/archive/master.zip
+homepage: https://github.com/larsjuhw/OctoPrint-SlicerSettingsParser
+source: https://github.com/larsjuhw/OctoPrint-SlicerSettingsParser
+archive: https://github.com/larsjuhw/OctoPrint-SlicerSettingsParser/archive/master.zip
 
 # TODO
 # Set this to true if your plugin uses the dependency_links setup parameter to include

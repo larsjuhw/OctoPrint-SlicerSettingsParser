@@ -1,27 +1,55 @@
+<h3>{{ _('SlicerSettingsParser Settings') }}</h3>
 <form class="form-horizontal">
-    <div class="control-group">
-        <button class="btn" id="SlicerSettingsParser_analyze" data-bind="click: analyzeAll">{{ _('Analyze all files') }}</button>
-    </div>
-    <div>
-        <div>
-            <small>
-                <a href="#" class="muted" onclick="$(this).children().toggleClass('fa-caret-right fa-caret-down').parent().parent().parent().next().slideToggle('fast')">
-                    <i class="fa fa-caret-down"></i> {{ _('Advanced') }}
-                </a>
-            </small>
-        </div>
-        <div class="show" style="display: block;">
-            <div class="control-group">
-                <label class="control-label">{{ _('Python regexes') }}</label>
-                <div class="controls">
-                    <textarea
-                        type="text"
-                        class="input-block-level"
-                        data-bind="value: joinedRegexes"
-                        style='font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace'
-                    ></textarea>
-                </div>
+    <div class="show" style="display: block;">
+        <span>For regex examples, see <a
+                href="https://github.com/larsjuhw/OctoPrint-SlicerSettingsParser#configuration">GitHub</a>.</span>
+        <div class="control-group">
+            <label class="control-label">Python regexes</label>
+            <div class="controls">
+                <textarea type="text" id="testy" class="input-block-level" data-bind="value: joinedRegexes"
+                    style='font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace'></textarea>
             </div>
         </div>
+    </div>
+    <form class="form-horizontal" onsubmit="return false;">
+        <div class="control-group">
+            <label class="control-label"><strong>Gcode lines scan limit</strong></label>
+            <div class="controls">
+                <label class="radio">
+                    <input type="radio" data-bind="checked: settings.limit" name="scan-cutoff" value="none">
+                    No limit
+                </label>
+
+                <label class="radio">
+                    <input type="radio" data-bind="checked: settings.limit" name="scan-cutoff" value="extrusion" data>
+                    Scan until first extrusion
+                </label>
+
+                <label class="radio">
+                    <input type="radio" data-bind="checked: settings.limit" name="scan-cutoff" value="lines">
+                    Scan this number of lines:
+                </label>
+
+                <input type="number" data-bind="enable: settings.limit() == 'lines', value: settings.maxlines"
+                    class="form-control input-mini">
+            </div>
+        </div>
+    </form>
+    <div class="control-group">
+        <button class="btn btn-primary" id="SlicerSettingsParser_analyze"
+            data-bind="click: analyzeAll, enable:!analyzing_files()">
+            <i class="fa fa-spinner fa-spin" data-bind="visible: analyzing_files" style="display: none;"></i>
+            Analyze all files
+        </button>
+    </div>
+    <div class="alert alert-info" data-bind="visible: analyzing_files">
+        <strong>Analyzing all files...</strong><br>
+        This can take a while depending on how much data you have. For reference, a Raspberry Pi 4B
+        should be able to handle about 4 MB/s.
+    </div>
+    <div class="alert alert-success" id="analysis_success" data-bind="visible: done_analysis">
+        <button type="button" class="close" data-bind="click: function(data){done_analysis(false)}"
+            aria-hidden="true">&times;</button>
+        <strong>Done!</strong> You may not see other plugins use the new data before reloading the page.
     </div>
 </form>

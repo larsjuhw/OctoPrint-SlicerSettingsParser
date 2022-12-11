@@ -21,7 +21,7 @@ or manually using this URL:
 
 Cura doesn't natively support injecting the slicer settings into the gcode, so you must add [this](https://gist.github.com/tjjfvi/75210b2ed20ed194d6eab48bf70c4f12) to your start/end gcode. Preferably add it to the start gcode, so that you can configure this plugin to stop parsing when it sees the first extrusion command.
 
-### Python regexes (Advanced)
+### Python regexes
 **Cura**
 
 If you use the start/end gcode provided above, use this regex:

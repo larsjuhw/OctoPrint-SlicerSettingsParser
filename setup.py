@@ -14,20 +14,20 @@ plugin_package = "octoprint_SlicerSettingsParser"
 plugin_name = "OctoPrint-SlicerSettingsParser"
 
 # The plugin's version. Can be overwritten within OctoPrint's internal data via __plugin_version__ in the plugin module
-plugin_version = "2.0.1"
+plugin_version = "3.0.0"
 
 # The plugin's description. Can be overwritten within OctoPrint's internal data via __plugin_description__ in the plugin
 # module
 plugin_description = """Plugin to analyse gcode for slicer settings comments and add additional metadata of such settings. Useless sans additional plugins to use the metadata."""
 
 # The plugin's author. Can be overwritten within OctoPrint's internal data via __plugin_author__ in the plugin module
-plugin_author = "T6"
+plugin_author = "Lars Wolter"
 
 # The plugin's author's mail address.
-plugin_author_email = "t6@t6.fyi"
+plugin_author_email = "larswolter@me.com"
 
 # The plugin's homepage URL. Can be overwritten within OctoPrint's internal data via __plugin_url__ in the plugin module
-plugin_url = "https://github.com/tjjfvi/OctoPrint-SlicerSettingsParser"
+plugin_url = "https://github.com/larsjuhw/OctoPrint-SlicerSettingsParser"
 
 # The plugin's license. Can be overwritten within OctoPrint's internal data via __plugin_license__ in the plugin module
 plugin_license = "AGPLv3"
@@ -59,7 +59,7 @@ plugin_ignored_packages = []
 # Example:
 #     plugin_requires = ["someDependency==dev"]
 #     additional_setup_parameters = {"dependency_links": ["https://github.com/someUser/someRepo/archive/master.zip#egg=someDependency-dev"]}
-additional_setup_parameters = {}
+additional_setup_parameters = {"python_requires": ">=3,<4"}
 
 ########################################################################################################################
 

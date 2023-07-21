@@ -32,6 +32,11 @@
 
                 <input type="number" data-bind="enable: settings.limit() == 'lines', value: settings.maxlines"
                     class="form-control input-mini">
+
+                <label class="checkbox">
+                    <input type="checkbox" data-bind="checked: settings.search_backwards" class="form-control input-mini">
+                    Parse the file from back to front
+                </label>
             </div>
         </div>
     </form>

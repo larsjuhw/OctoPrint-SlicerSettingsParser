@@ -4,6 +4,7 @@ import octoprint.filemanager
 import octoprint.util.comm
 import re
 
+from file_read_backwards import FileReadBackwards
 
 class SlicerSettingsParserPlugin(
 	octoprint.plugin.StartupPlugin,
@@ -24,7 +25,8 @@ class SlicerSettingsParserPlugin(
 				"^;   (?P<key>.*?),(?P<val>.*)",
 			],
 			limit="none",
-			maxlines=100
+			maxlines=100,
+			search_backwards=False
 		)
 
 	def get_template_configs(self):
@@ -69,27 +71,29 @@ class SlicerSettingsParserPlugin(
 	def _analyze_file(self, path):
 		self._logger.info("Analyzing file: %s" % path)
 
-		file = open(self._storage_interface.path_on_disk(path))
-
 		slicer_settings = dict()
 		regexes = [re.compile(x) for x in self._settings.get(["regexes"])]
 
 		limit = self._settings.get(['limit'])
 		max_lines = self._settings.get(['maxlines'])
 
-		for i, line in enumerate(file):
-			if limit == 'lines' and i > max_lines:
-				break
-			if limit == 'extrusion' and octoprint.util.comm.gcode_command_for_cmd(line) == 'G1':
-				break
-			for regex in regexes:
-				match = re.search(regex, line)
-				if not match:
-					continue
+		search_backwards = self._settings.get(["search_backwards"])
+		method = FileReadBackwards if search_backwards else open
 
-				key, val = match.group("key", "val")
-				slicer_settings[key] = val
-				break
+		with method(self._storage_interface.path_on_disk(path)) as file:
+			for i, line in enumerate(file):
+				if limit == 'lines' and i > max_lines:
+					break
+				if limit == 'extrusion' and octoprint.util.comm.gcode_command_for_cmd(line) == 'G1':
+					break
+				for regex in regexes:
+					match = re.search(regex, line)
+					if not match:
+						continue
+
+					key, val = match.group("key", "val")
+					slicer_settings[key] = val
+					break
 
 		self._storage_interface.set_additional_metadata(path, "slicer_settings", slicer_settings, overwrite=True)
 		self._logger.info("Saved slicer settings metadata for file: %s" % path)

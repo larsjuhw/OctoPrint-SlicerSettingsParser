@@ -75,7 +75,7 @@ class SlicerSettingsParserPlugin(
 		regexes = [re.compile(x) for x in self._settings.get(["regexes"])]
 
 		limit = self._settings.get(['limit'])
-		max_lines = self._settings.get(['maxlines'])
+		max_lines = int(self._settings.get(['maxlines']))
 
 		search_backwards = self._settings.get(["search_backwards"])
 		method = FileReadBackwards if search_backwards else open

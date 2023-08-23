@@ -4,7 +4,7 @@
         <span>For regex examples, see <a
                 href="https://github.com/larsjuhw/OctoPrint-SlicerSettingsParser#configuration">GitHub</a>.</span>
         <div class="control-group">
-            <label class="control-label">Python regexes</label>
+            <label class="control-label"><strong>Python regexes</strong></label>
             <div class="controls">
                 <textarea type="text" id="testy" class="input-block-level" data-bind="value: joinedRegexes"
                     style='font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace'></textarea>
@@ -32,6 +32,17 @@
 
                 <input type="number" data-bind="enable: settings.limit() == 'lines', value: settings.maxlines"
                     class="form-control input-mini">
+            </div>
+        </div>
+    </form>
+    <form class="form-horizontal" onsubmit="return false;">
+        <div class="control-group">
+            <label class="control-label"><strong>File search method</strong></label>
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox" data-bind="checked: settings.search_backwards" class="form-control input-mini">
+                    Parse the file from back to front
+                </label>
             </div>
         </div>
     </form>

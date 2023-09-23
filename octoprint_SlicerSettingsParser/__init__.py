@@ -87,7 +87,7 @@ class SlicerSettingsParserPlugin(
 				if limit == 'extrusion' and octoprint.util.comm.gcode_command_for_cmd(line) == 'G1':
 					break
 				for regex in regexes:
-					match = re.search(regex, line)
+					match = regex.search(line)
 					if not match:
 						continue
 

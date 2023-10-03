@@ -3,6 +3,7 @@ import octoprint.plugin
 import octoprint.filemanager
 import octoprint.util.comm
 import re
+from os import path as ospath
 
 from file_read_backwards import FileReadBackwards
 
@@ -48,7 +49,7 @@ class SlicerSettingsParserPlugin(
 			self._analyze_all()
 
 	def on_event(self, event, payload):
-		if event != "Upload" or payload["target"] != "local":
+		if event != "Upload" or payload["target"] != "local" or ospath.splitext(payload["name"]).lower() != "gcode":
 			return
 
 		self._analyze_file(payload["path"])

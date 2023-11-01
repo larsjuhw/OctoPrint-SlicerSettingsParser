@@ -1,4 +1,5 @@
 # OctoPrint-SlicerSettingsParser
+Adopted fork of [tjjfvi/OctoPrint-SlicerSettingsParser](https://github.com/tjjfvi/OctoPrint-SlicerSettingsParser)
 
 **NOTE: Only supports Slic3r, Simplify3D, and Cura currently; suggest more in issues; contributions welcome!**
 

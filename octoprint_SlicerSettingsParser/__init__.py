@@ -44,12 +44,12 @@ class SlicerSettingsParserPlugin(
 		)
 
 	def on_api_command(self, command, data):
-		self._logger.info("received api command: %s" % command)
+		self._logger.info(f"Received api command: {command}")
 		if command == "analyze_all":
 			self._analyze_all()
 
 	def on_event(self, event, payload):
-		if event != "Upload" or payload["target"] != "local" or ospath.splitext(payload["name"])[-1].lower() not in ["gcode","gco","g"]:
+		if event != "Upload" or payload["target"] != "local" or ospath.splitext(payload["name"])[-1].lower() not in [".gcode",".gco",".g"]:
 			return
 
 		self._analyze_file(payload["path"])
@@ -70,7 +70,7 @@ class SlicerSettingsParserPlugin(
 		recurse(self._storage_interface.list_files())
 
 	def _analyze_file(self, path):
-		self._logger.info("Analyzing file: %s" % path)
+		self._logger.info(f"Analyzing file: {path}")
 
 		slicer_settings = dict()
 		regexes = [re.compile(x) for x in self._settings.get(["regexes"])]
@@ -97,7 +97,7 @@ class SlicerSettingsParserPlugin(
 					break
 
 		self._storage_interface.set_additional_metadata(path, "slicer_settings", slicer_settings, overwrite=True)
-		self._logger.info("Saved slicer settings metadata for file: %s" % path)
+		self._logger.info(f"Saved slicer settings metadata for file: {path}")
 
 	def get_update_information(self):
 		return {

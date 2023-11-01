@@ -19,14 +19,14 @@ or manually using this URL:
 
 ### Cura
 
-Cura doesn't natively support injecting the slicer settings into the gcode, so you must add [this](https://gist.github.com/tjjfvi/75210b2ed20ed194d6eab48bf70c4f12) to your start/end gcode. Preferably add it to the start gcode, so that you can configure this plugin to stop parsing when it sees the first extrusion command.
+Cura doesn't natively support injecting the slicer settings into the gcode, so you must add [this](https://gist.github.com/larsjuhw/3db286b71d9c91ca7c72d3fd3325af9f) to your start/end gcode. Preferably add it to the start gcode, so that you can configure this plugin to stop parsing when it sees the first extrusion command.
 
 ### Python regexes
 **Cura**
 
 If you use the start/end gcode provided above, use this regex:
 ```
-^;\s*(?P<key>\w+[\w\s]*) : (?P<val>.*)
+^; (?<key>\w+[\w\s_]*) = (?<val>.*)
 ```
 
 **Slic3r**

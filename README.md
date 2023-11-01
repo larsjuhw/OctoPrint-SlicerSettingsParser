@@ -19,7 +19,7 @@ or manually using this URL:
 
 ### Cura
 
-Cura doesn't natively support injecting the slicer settings into the gcode, so you must add [this](https://gist.github.com/larsjuhw/3db286b71d9c91ca7c72d3fd3325af9f) to your start/end gcode. Preferably add it to the start gcode, so that you can configure this plugin to stop parsing when it sees the first extrusion command.
+Cura doesn't inject any slicer settings into the gcode by default, so you must add [this](https://gist.github.com/larsjuhw/3db286b71d9c91ca7c72d3fd3325af9f) to your start/end gcode. If you add it to the end gcode, make sure you check "Parse the file from back to front" in the plugin settings.
 
 ### Python regexes
 **Cura**
@@ -43,8 +43,7 @@ If you use the start/end gcode provided above, use this regex:
 
 **Other**
 
-This plugin uses python regexes to parse the gcode.
-Syntax can be easily found on the web.
+This plugin uses Python regexes to parse the gcode.
 There should be two named capturing groups, `key` and `val`.
 Multiple regexes should be listed on seperate lines, ordered by precedence.
 Any chars are allowed in the groups; `\n` will be replaced by newlines.

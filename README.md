@@ -26,7 +26,7 @@ Cura doesn't natively support injecting the slicer settings into the gcode, so y
 
 If you use the start/end gcode provided above, use this regex:
 ```
-^; (?<key>\w+[\w\s_]*) = (?<val>.*)
+^; (?P<key>\w+[\w\s]*) = (?P<val>.*)
 ```
 
 **Slic3r**

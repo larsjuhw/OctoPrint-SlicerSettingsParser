@@ -44,7 +44,7 @@ class SlicerSettingsParserPlugin(
 		return ['file_analyzed']
 	
 	def send_file_analyzed_event(self, path: str):
-		event = Events.PLUGIN_SLICERSETTINGSPARSER_FILE_ANALYZED
+		event = Events.PLUGIN_SLICER_SETTINGS_PARSER_FILE_ANALYZED
 		payload = {
 			'path': path
 		}

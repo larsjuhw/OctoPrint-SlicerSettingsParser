@@ -1,11 +1,13 @@
 # coding=utf-8
-import octoprint.plugin
-import octoprint.filemanager
-import octoprint.util.comm
 import re
 from os import path as ospath
 
+import octoprint.filemanager
+import octoprint.plugin
+import octoprint.util.comm
 from file_read_backwards import FileReadBackwards
+from octoprint.events import Events
+
 
 class SlicerSettingsParserPlugin(
 	octoprint.plugin.StartupPlugin,
@@ -37,6 +39,16 @@ class SlicerSettingsParserPlugin(
 
 	def get_assets(self):
 		return dict(js=["js/SlicerSettingsParser.js"])
+	
+	def register_custom_events_hook(*args, **kwargs):
+		return ['file_analyzed']
+	
+	def send_file_analyzed_event(self, path: str):
+		event = Events.PLUGIN_SLICERSETTINGSPARSER_FILE_ANALYZED
+		payload = {
+			'path': path
+		}
+		self._event_bus.fire(event, payload=payload)
 
 	def get_api_commands(self):
 		return dict(
@@ -97,6 +109,7 @@ class SlicerSettingsParserPlugin(
 					break
 
 		self._storage_interface.set_additional_metadata(path, "slicer_settings", slicer_settings, overwrite=True)
+		self.send_file_analyzed_event(path)
 		self._logger.info(f"Saved slicer settings metadata for file: {path}")
 
 	def get_update_information(self):
@@ -135,5 +148,6 @@ def __plugin_load__():
 
 	global __plugin_hooks__
 	__plugin_hooks__ = {
-		"octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information
+		"octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
+        "octoprint.events.register_custom_events": __plugin_implementation__.register_custom_events_hook,
 	}

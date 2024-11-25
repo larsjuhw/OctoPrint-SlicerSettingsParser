@@ -61,7 +61,7 @@ class SlicerSettingsParserPlugin(
 			self._analyze_all()
 
 	def on_event(self, event, payload):
-		if event != "Upload" or payload["target"] != "local" or ospath.splitext(payload["name"])[-1].lower() not in [".gcode",".gco",".g"]:
+		if event != "FileAdded" or payload["storage"] != "local" or ospath.splitext(payload["name"])[-1].lower() not in [".gcode",".gco",".g"]:
 			return
 
 		self._analyze_file(payload["path"])
